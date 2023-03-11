@@ -13,20 +13,7 @@ if (localStorage.getItem("tasks")) {
 
 tasks.forEach((task) => {
   const itemCssClass = task.done ? "item done" : "item";
-
-  const createItem = `<li class="${itemCssClass}" id='${task.id}' >
-       <p>${task.text}</p>
-       <div class="icons">
-          <button class="item-btn edit-icon" data-action='done'>
-          <span class="icon"><ion-icon name="create-outline"></ion-icon></span>
-          </button>
-          <button class="item-btn delete-icon" data-action='delete'>
-          <span class="icon"><ion-icon name="trash-outline"></ion-icon></span>
-          </button>
-       </div>
-    </div>`;
-
-  items.insertAdjacentHTML("afterbegin", createItem);
+  items.insertAdjacentHTML("afterbegin", renderItem(task, itemCssClass));
 });
 
 /////
@@ -51,25 +38,13 @@ function createItem(e) {
   };
 
   tasks.push(item);
-  saveTasksToLocalStorage();
 
   if (input.value.trim() != "") {
-    const createItem = `<li class="item" id='${item.id}' >
-       <p>${item.text}</p>
-       <div class="icons">
-          <button class="item-btn edit-icon" data-action='done'>
-          <span class="icon"><ion-icon name="create-outline"></ion-icon></span>
-          </button>
-          <button class="item-btn delete-icon" data-action='delete'>
-          <span class="icon"><ion-icon name="trash-outline"></ion-icon></span>
-          </button>
-       </div>
-    </div>`;
-
-    input.value = "";
     input.focus();
     message.style.display = "none";
-    items.insertAdjacentHTML("afterbegin", createItem);
+    items.insertAdjacentHTML("afterbegin", renderItem(item, "item"));
+    saveTasksToLocalStorage();
+    input.value = "";
   } else {
     const messageText = "field must not be empty";
     message.style.display = "block";
@@ -93,4 +68,18 @@ function actionItem(e) {
 
 function saveTasksToLocalStorage() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function renderItem(item, itemCssClass) {
+  return `<li class="${itemCssClass}" id='${item.id}'>
+  <p>${item.text}</p>
+  <div class="icons">
+    <button class="item-btn edit-icon" data-action='done'>
+      <span class="icon"><ion-icon name="create-outline"></ion-icon></span>
+    </button>
+    <button class="item-btn delete-icon" data-action='delete'>
+      <span class="icon"><ion-icon name="trash-outline"></ion-icon></span>
+    </button>
+  </div>
+  </div>`;
 }
